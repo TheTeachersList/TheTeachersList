@@ -1,0 +1,61 @@
+import { NextResponse } from "next/server";
+import { createDraftProfile, listProfilesForSchool } from "@/lib/profiles";
+import type { Favorites, ProfileCategory } from "@/lib/types";
+
+export const dynamic = "force-dynamic";
+
+export async function GET(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const school = searchParams.get("school");
+    if (!school) {
+      return NextResponse.json({ error: "school query param is required" }, { status: 400 });
+    }
+    const profiles = await listProfilesForSchool(school);
+    return NextResponse.json({ profiles });
+  } catch (err) {
+    return NextResponse.json({ error: (err as Error).message }, { status: 500 });
+  }
+}
+
+export async function POST(request: Request) {
+  try {
+    const body = await request.json();
+    const name = String(body.name ?? "").trim();
+    const school = String(body.school ?? "").trim();
+    const category = String(body.category ?? "teacher") as ProfileCategory;
+    const gradeOrRole = String(body.gradeOrRole ?? "").trim();
+    const schoolEmail = String(body.schoolEmail ?? "").trim().toLowerCase();
+    const birthday = String(body.birthday ?? "");
+    const favorites: Favorites = {
+      color: String(body.favorites?.color ?? ""),
+      treat: String(body.favorites?.treat ?? ""),
+      drink: String(body.favorites?.drink ?? ""),
+      scent: String(body.favorites?.scent ?? ""),
+      hobbies: Array.isArray(body.favorites?.hobbies) ? body.favorites.hobbies.map(String) : [],
+      store: String(body.favorites?.store ?? ""),
+      avoid: String(body.favorites?.avoid ?? ""),
+      wishlist: String(body.favorites?.wishlist ?? ""),
+    };
+
+    if (!name || !school || !gradeOrRole || !schoolEmail) {
+      return NextResponse.json({ error: "Missing required fields." }, { status: 400 });
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(schoolEmail)) {
+      return NextResponse.json({ error: "That doesn't look like a valid email." }, { status: 400 });
+    }
+
+    const profile = await createDraftProfile({
+      school,
+      category,
+      gradeOrRole,
+      name,
+      schoolEmail,
+      birthday,
+      favorites,
+    });
+    return NextResponse.json({ profile }, { status: 201 });
+  } catch (err) {
+    return NextResponse.json({ error: (err as Error).message }, { status: 500 });
+  }
+}

@@ -1,0 +1,47 @@
+@import "tailwindcss";
+
+:root {
+  --color-paper: #f2ecda;
+  --color-paper-dark: #e8dfc5;
+  --color-board: #1f3d2b;
+  --color-board-light: #2c4f3a;
+  --color-brick: #b23a2e;
+  --color-brick-dark: #8f2c22;
+  --color-gold: #e0a23b;
+  --color-ink: #22252b;
+  --color-ink-soft: #55584f;
+  --color-card: #fbf8ef;
+  --color-hairline: rgba(34, 37, 43, 0.14);
+}
+
+@theme inline {
+  --color-paper: var(--color-paper);
+  --color-paper-dark: var(--color-paper-dark);
+  --color-board: var(--color-board);
+  --color-board-light: var(--color-board-light);
+  --color-brick: var(--color-brick);
+  --color-brick-dark: var(--color-brick-dark);
+  --color-gold: var(--color-gold);
+  --color-ink: var(--color-ink);
+  --color-ink-soft: var(--color-ink-soft);
+  --color-card: var(--color-card);
+  --color-hairline: var(--color-hairline);
+  --font-display: var(--font-fraunces);
+  --font-body: var(--font-inter);
+  --font-hand: var(--font-caveat);
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+}
+
+.hairline {
+  border-color: var(--color-hairline);
+}
+
+::selection {
+  background: var(--color-gold);
+  color: var(--color-board);
+}

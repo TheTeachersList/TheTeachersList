@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "teachers-list-web",
+      "runtimeExecutable": "cmd.exe",
+      "runtimeArgs": ["/c", "C:\\Users\\rache\\OneDrive\\Desktop\\The Teacher's List\\web\\dev.bat"],
+      "port": 3000
+    }
+  ]
+}
