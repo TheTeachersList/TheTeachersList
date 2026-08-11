@@ -1,3 +1,4 @@
+import { withAffiliateTag } from "./affiliate";
 import { listClaimsForPerson } from "./claims";
 import { listGiftCatalog, suggestGifts } from "./gifts";
 import type { Profile } from "./types";
@@ -26,7 +27,7 @@ export async function getPublicGiftsForProfile(profile: Profile): Promise<Displa
       name: s.name,
       blurb: s.blurb,
       price: s.priceRange,
-      link: s.link,
+      link: withAffiliateTag(s.link),
       source: "catalog" as const,
       topPick: i < 2 && s.score >= 2,
       claimedBy: null,
@@ -38,7 +39,7 @@ export async function getPublicGiftsForProfile(profile: Profile): Promise<Displa
     name: g.name,
     blurb: g.note,
     price: g.price,
-    link: g.link,
+    link: withAffiliateTag(g.link),
     source: "custom" as const,
     topPick: false,
     claimedBy: null,

@@ -1,4 +1,5 @@
 import { listRecords } from "./airtable";
+import { withAffiliateTag } from "./affiliate";
 import type { Favorites, GiftCatalogItem, SuggestedGift } from "./types";
 
 const TABLE = "GiftCatalog";
@@ -28,7 +29,7 @@ function toGift(record: { id: string; fields: Partial<GiftCatalogFields> }): Gif
     name: f.Name ?? "Gift idea",
     blurb: f.Blurb ?? "",
     priceRange: f.PriceRange ?? "",
-    link: f.Link ?? "",
+    link: withAffiliateTag(f.Link ?? ""),
     sizable: Boolean(f.Sizable),
     tags: {
       color: f.Tag_Color,

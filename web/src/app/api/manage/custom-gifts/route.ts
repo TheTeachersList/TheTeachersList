@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { withAffiliateTag } from "@/lib/affiliate";
 import { getManageProfileRecordId } from "@/lib/manageAuth";
 import { getProfileByRecordId, updateCustomGifts } from "@/lib/profiles";
 
@@ -16,7 +17,7 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     const name = String(body.name ?? "").trim();
-    const link = String(body.link ?? "").trim();
+    const link = withAffiliateTag(String(body.link ?? "").trim());
     const price = String(body.price ?? "").trim();
     const note = String(body.note ?? "").trim();
     if (!name || !link) {
