@@ -20,6 +20,10 @@ export type Favorites = {
   scent: string;
   hobbies: string[];
   store: string;
+  restaurant: string;
+  flower: string;
+  sportsTeam: string;
+  shirtSize: string;
   avoid: string;
   wishlist: string;
 };
@@ -121,6 +125,34 @@ export const STORES = [
   "Ulta / Sephora",
   "HomeGoods / TJ Maxx",
 ];
+export const RESTAURANTS = [
+  "Chick-fil-A",
+  "Raising Cane's",
+  "Olive Garden",
+  "Chili's",
+  "Whataburger",
+  "Panera Bread",
+  "Local Cajun / Creole Spot",
+];
+export const FLOWERS = [
+  "Roses",
+  "Sunflowers",
+  "Tulips",
+  "Daisies",
+  "Lilies",
+  "Hydrangeas",
+  "Orchids",
+];
+export const SPORTS_TEAMS = [
+  "LSU Tigers",
+  "New Orleans Saints",
+  "New Orleans Pelicans",
+  "Tulane Green Wave",
+  "ULL Ragin' Cajuns",
+  "Southern University Jaguars",
+  "Grambling State Tigers",
+];
+export const SHIRT_SIZES = ["XS", "S", "M", "L", "XL", "XXL", "XXXL"];
 export const STAFF_ROLES = [
   "Librarian",
   "School Counselor",

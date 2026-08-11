@@ -34,6 +34,10 @@ export async function POST(request: Request) {
       scent: String(body.favorites?.scent ?? ""),
       hobbies: Array.isArray(body.favorites?.hobbies) ? body.favorites.hobbies.map(String) : [],
       store: String(body.favorites?.store ?? ""),
+      restaurant: String(body.favorites?.restaurant ?? ""),
+      flower: String(body.favorites?.flower ?? ""),
+      sportsTeam: String(body.favorites?.sportsTeam ?? ""),
+      shirtSize: String(body.favorites?.shirtSize ?? ""),
       avoid: String(body.favorites?.avoid ?? ""),
       wishlist: String(body.favorites?.wishlist ?? ""),
     };

@@ -1,5 +1,16 @@
 import { NextResponse } from "next/server";
-import { COLORS, DRINKS, HOBBIES, SCENTS, STORES, TREATS } from "@/lib/types";
+import {
+  COLORS,
+  DRINKS,
+  FLOWERS,
+  HOBBIES,
+  RESTAURANTS,
+  SCENTS,
+  SHIRT_SIZES,
+  SPORTS_TEAMS,
+  STORES,
+  TREATS,
+} from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
@@ -28,15 +39,19 @@ Color options: ${COLORS.join(", ")}
 Treat options: ${TREATS.join(", ")}
 Drink options: ${DRINKS.join(", ")}
 Scent options: ${SCENTS.join(", ")}
-Hobby options (pick up to 2 that best match): ${HOBBIES.join(", ")}
+Hobby options (pick as many as clearly match, no limit): ${HOBBIES.join(", ")}
 Store options: ${STORES.join(", ")}
+Restaurant options: ${RESTAURANTS.join(", ")}
+Flower options: ${FLOWERS.join(", ")}
+Sports team options: ${SPORTS_TEAMS.join(", ")}
+Shirt size options: ${SHIRT_SIZES.join(", ")}
 
 Also extract, as free text:
 - "avoid": any allergies or things to avoid mentioned
 - "wishlist": any specific wishlist note or extra detail mentioned
 
 Respond with ONLY a JSON object in exactly this shape, no other text:
-{"color":"","treat":"","drink":"","scent":"","hobbies":[],"store":"","avoid":"","wishlist":""}`;
+{"color":"","treat":"","drink":"","scent":"","hobbies":[],"store":"","restaurant":"","flower":"","sportsTeam":"","shirtSize":"","avoid":"","wishlist":""}`;
 
     const res = await fetch(ANTHROPIC_API, {
       method: "POST",
@@ -77,8 +92,12 @@ Respond with ONLY a JSON object in exactly this shape, no other text:
         treat: parsed.treat ?? "",
         drink: parsed.drink ?? "",
         scent: parsed.scent ?? "",
-        hobbies: Array.isArray(parsed.hobbies) ? parsed.hobbies.slice(0, 2) : [],
+        hobbies: Array.isArray(parsed.hobbies) ? parsed.hobbies : [],
         store: parsed.store ?? "",
+        restaurant: parsed.restaurant ?? "",
+        flower: parsed.flower ?? "",
+        sportsTeam: parsed.sportsTeam ?? "",
+        shirtSize: parsed.shirtSize ?? "",
         avoid: parsed.avoid ?? "",
         wishlist: parsed.wishlist ?? "",
       },

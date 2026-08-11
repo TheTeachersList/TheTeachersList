@@ -30,6 +30,10 @@ const emptyFavorites: Favorites = {
   scent: "",
   hobbies: [],
   store: "",
+  restaurant: "",
+  flower: "",
+  sportsTeam: "",
+  shirtSize: "",
   avoid: "",
   wishlist: "",
 };

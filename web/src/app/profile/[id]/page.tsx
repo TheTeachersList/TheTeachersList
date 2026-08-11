@@ -38,6 +38,10 @@ export default async function ProfilePage({ params }: { params: Promise<{ id: st
           <FavItem label="Go-to Drink" value={f.drink} />
           <FavItem label="Favorite Scent" value={f.scent} />
           <FavItem label="Favorite Store" value={f.store} />
+          <FavItem label="Favorite Restaurant" value={f.restaurant} />
+          <FavItem label="Favorite Flower" value={f.flower} />
+          <FavItem label="Favorite Sports Team" value={f.sportsTeam} />
+          <FavItem label="Shirt Size" value={f.shirtSize} />
           <FavItem label="Hobbies" value={f.hobbies.join(", ")} />
           {f.avoid && <FavItem label="Please Avoid" value={f.avoid} full />}
           {f.wishlist && <FavItem label="Wishlist Note" value={f.wishlist} full />}
