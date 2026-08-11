@@ -28,7 +28,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ id: st
         <div className="px-6 sm:px-7 pt-5 pb-4 pl-11 border-b-2 border-dashed hairline">
           <div className="font-display font-bold text-2xl sm:text-[26px] text-board">{profile.name}</div>
           <div className="text-sm text-ink-soft mt-0.5">
-            {profile.gradeOrRole} · {school?.name ?? profile.school}
+            {profile.gradeOrRole.join(", ")} · {school?.name ?? profile.school}
             <span className="ml-2 text-[11px] font-bold text-green-800">✓ verified school email</span>
           </div>
         </div>

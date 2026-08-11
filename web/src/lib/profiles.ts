@@ -58,12 +58,20 @@ function toProfile(record: { id: string; fields: Partial<ProfileFields> }): Prof
   } catch {
     customGifts = [];
   }
+  let gradeOrRole: string[] = [];
+  try {
+    const parsed = f.gradeOrRole ? JSON.parse(f.gradeOrRole) : [];
+    gradeOrRole = Array.isArray(parsed) ? parsed.map(String) : [String(parsed)];
+  } catch {
+    // Older records stored a plain string instead of a JSON array.
+    gradeOrRole = f.gradeOrRole ? [f.gradeOrRole] : [];
+  }
   return {
     recordId: record.id,
     id: f.id ?? record.id,
     school: f.school ?? "",
     category: f.category ?? "teacher",
-    gradeOrRole: f.gradeOrRole ?? "",
+    gradeOrRole,
     name: f.name ?? "",
     schoolEmail: f.schoolEmail ?? "",
     emailVerified: Boolean(f.emailVerified),
@@ -110,7 +118,7 @@ function uid(): string {
 export async function createDraftProfile(input: {
   school: string;
   category: ProfileCategory;
-  gradeOrRole: string;
+  gradeOrRole: string[];
   name: string;
   schoolEmail: string;
   birthday: string;
@@ -120,7 +128,7 @@ export async function createDraftProfile(input: {
     id: uid(),
     school: input.school,
     category: input.category,
-    gradeOrRole: input.gradeOrRole,
+    gradeOrRole: JSON.stringify(input.gradeOrRole),
     name: input.name,
     schoolEmail: input.schoolEmail,
     birthday: input.birthday,

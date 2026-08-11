@@ -24,7 +24,9 @@ export async function POST(request: Request) {
     const name = String(body.name ?? "").trim();
     const school = String(body.school ?? "").trim();
     const category = String(body.category ?? "teacher") as ProfileCategory;
-    const gradeOrRole = String(body.gradeOrRole ?? "").trim();
+    const gradeOrRole = Array.isArray(body.gradeOrRole)
+      ? body.gradeOrRole.map(String).filter((g: string) => g.trim())
+      : [String(body.gradeOrRole ?? "")].filter((g: string) => g.trim());
     const schoolEmail = String(body.schoolEmail ?? "").trim().toLowerCase();
     const birthday = String(body.birthday ?? "");
     const favorites: Favorites = {
@@ -42,7 +44,7 @@ export async function POST(request: Request) {
       wishlist: String(body.favorites?.wishlist ?? ""),
     };
 
-    if (!name || !school || !gradeOrRole || !schoolEmail) {
+    if (!name || !school || gradeOrRole.length === 0 || !schoolEmail) {
       return NextResponse.json({ error: "Missing required fields." }, { status: 400 });
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(schoolEmail)) {

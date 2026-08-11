@@ -12,7 +12,7 @@ export default function SchoolRoster({ school, profiles }: { school: School; pro
   const inTab =
     tab === "Staff"
       ? null
-      : profiles.filter((p) => p.category === "teacher" && p.gradeOrRole === tab);
+      : profiles.filter((p) => p.category === "teacher" && p.gradeOrRole.includes(tab));
 
   return (
     <div>
@@ -35,7 +35,7 @@ export default function SchoolRoster({ school, profiles }: { school: School; pro
         <div className="grid gap-3.5" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))" }}>
           {tab === "Staff"
             ? STAFF_ROLES.map((role) => {
-                const people = profiles.filter((p) => p.category === "staff" && p.gradeOrRole === role);
+                const people = profiles.filter((p) => p.category === "staff" && p.gradeOrRole.includes(role));
                 if (people.length === 0) {
                   return (
                     <Link

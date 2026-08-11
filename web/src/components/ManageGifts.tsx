@@ -194,7 +194,7 @@ function Dashboard({ token, onSignOut }: { token: string; onSignOut: () => void 
       <div className="flex items-center justify-between">
         <div>
           <p className="font-display font-semibold text-xl text-board">{profile.name}</p>
-          <p className="text-ink-soft text-sm">{profile.gradeOrRole}</p>
+          <p className="text-ink-soft text-sm">{profile.gradeOrRole.join(", ")}</p>
         </div>
         <div className="flex items-center gap-3">
           <a href={`/profile/${profile.id}`} className="text-brick underline text-sm">

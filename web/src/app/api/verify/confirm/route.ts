@@ -28,7 +28,8 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: "Profile not found for this email." }, { status: 404 });
       }
       await markProfileVerified(profileRecordId);
-      return NextResponse.json({ ok: true, profileId: profile.id });
+      const token = createManageToken(profileRecordId);
+      return NextResponse.json({ ok: true, profileId: profile.id, token });
     }
 
     if (purpose === "manage-gifts") {

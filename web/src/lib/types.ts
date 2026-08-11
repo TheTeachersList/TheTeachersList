@@ -43,7 +43,7 @@ export type Profile = {
   id: string;
   school: string;
   category: ProfileCategory;
-  gradeOrRole: string;
+  gradeOrRole: string[];
   name: string;
   schoolEmail: string;
   emailVerified: boolean;

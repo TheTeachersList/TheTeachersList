@@ -50,7 +50,7 @@ export default function AddProfileForm() {
   const [name, setName] = useState("");
   const [schoolId, setSchoolId] = useState(searchParams.get("school") ?? "");
   const [category, setCategory] = useState<ProfileCategory>("teacher");
-  const [gradeOrRole, setGradeOrRole] = useState("");
+  const [gradeOrRole, setGradeOrRole] = useState<string[]>([]);
   const [email, setEmail] = useState("");
   const [birthday, setBirthday] = useState("");
   const [favorites, setFavorites] = useState<Favorites>(emptyFavorites);
@@ -136,6 +136,10 @@ export default function AddProfileForm() {
     setCustomHobby("");
   }
 
+  function toggleGrade(g: string) {
+    setGradeOrRole((prev) => (prev.includes(g) ? prev.filter((x) => x !== g) : [...prev, g]));
+  }
+
   async function addNewSchool(input: { name: string; city: string; parish: string; level: string; grades: string[] }) {
     const res = await fetch("/api/schools", {
       method: "POST",
@@ -165,8 +169,8 @@ export default function AddProfileForm() {
       setFormErr("Please choose a school.");
       return;
     }
-    if (!gradeOrRole) {
-      setFormErr(category === "teacher" ? "Please choose a grade." : "Please choose a role.");
+    if (gradeOrRole.length === 0) {
+      setFormErr(category === "teacher" ? "Please choose at least one grade." : "Please choose a role.");
       return;
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -239,7 +243,12 @@ export default function AddProfileForm() {
         return;
       }
       setStage("done");
-      router.push(`/profile/${pendingProfileSlug}`);
+      if (data.token) {
+        sessionStorage.setItem("ttl_manage_token", data.token);
+        router.push("/manage-gifts");
+      } else {
+        router.push(`/profile/${pendingProfileSlug}`);
+      }
     } catch {
       setVerifyErr("Something went wrong. Please try again.");
     } finally {
@@ -327,7 +336,7 @@ export default function AddProfileForm() {
             value={category}
             onChange={(e) => {
               setCategory(e.target.value as ProfileCategory);
-              setGradeOrRole("");
+              setGradeOrRole([]);
             }}
             className="w-full border hairline rounded-[4px] px-3 py-2 bg-white text-[15px]"
           >
@@ -336,20 +345,39 @@ export default function AddProfileForm() {
           </select>
         </Field>
 
-        <Field label={category === "teacher" ? "Grade" : "Role"}>
-          <select
-            value={gradeOrRole}
-            onChange={(e) => setGradeOrRole(e.target.value)}
-            className="w-full border hairline rounded-[4px] px-3 py-2 bg-white text-[15px]"
-          >
-            <option value="">—</option>
-            {gradeOptions.map((g) => (
-              <option key={g} value={g}>
-                {g}
-              </option>
-            ))}
-          </select>
-        </Field>
+        {category === "teacher" ? (
+          <Field label="Grades taught (select all that apply)" full>
+            <div className="flex flex-wrap gap-2">
+              {gradeOptions.map((g) => (
+                <button
+                  type="button"
+                  key={g}
+                  onClick={() => toggleGrade(g)}
+                  className={`border hairline rounded-full px-3.5 py-1.5 text-[13px] ${
+                    gradeOrRole.includes(g) ? "bg-board text-white border-board" : "bg-white text-ink"
+                  }`}
+                >
+                  {g}
+                </button>
+              ))}
+            </div>
+          </Field>
+        ) : (
+          <Field label="Role">
+            <select
+              value={gradeOrRole[0] ?? ""}
+              onChange={(e) => setGradeOrRole(e.target.value ? [e.target.value] : [])}
+              className="w-full border hairline rounded-[4px] px-3 py-2 bg-white text-[15px]"
+            >
+              <option value="">—</option>
+              {gradeOptions.map((g) => (
+                <option key={g} value={g}>
+                  {g}
+                </option>
+              ))}
+            </select>
+          </Field>
+        )}
 
         <Field label="School Email" full>
           <input
