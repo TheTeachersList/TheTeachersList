@@ -14,6 +14,10 @@ type GiftCatalogFields = {
   Tag_Scent?: string;
   Tag_Hobby?: string;
   Tag_Store?: string;
+  Tag_Restaurant?: string;
+  Tag_Flower?: string;
+  Tag_SportsTeam?: string;
+  Sizable?: boolean;
   Active?: boolean;
 };
 
@@ -25,6 +29,7 @@ function toGift(record: { id: string; fields: Partial<GiftCatalogFields> }): Gif
     blurb: f.Blurb ?? "",
     priceRange: f.PriceRange ?? "",
     link: f.Link ?? "",
+    sizable: Boolean(f.Sizable),
     tags: {
       color: f.Tag_Color,
       treat: f.Tag_Treat,
@@ -32,6 +37,9 @@ function toGift(record: { id: string; fields: Partial<GiftCatalogFields> }): Gif
       scent: f.Tag_Scent,
       hobby: f.Tag_Hobby,
       store: f.Tag_Store,
+      restaurant: f.Tag_Restaurant,
+      flower: f.Tag_Flower,
+      sportsTeam: f.Tag_SportsTeam,
     },
   };
 }
@@ -50,7 +58,11 @@ function scoreGift(gift: GiftCatalogItem, favorites: Favorites): number {
   if (gift.tags.drink && gift.tags.drink === favorites.drink) score += 2;
   if (gift.tags.scent && gift.tags.scent === favorites.scent) score += 2;
   if (gift.tags.store && gift.tags.store === favorites.store) score += 2;
+  if (gift.tags.restaurant && gift.tags.restaurant === favorites.restaurant) score += 2;
+  if (gift.tags.flower && gift.tags.flower === favorites.flower) score += 2;
+  if (gift.tags.sportsTeam && gift.tags.sportsTeam === favorites.sportsTeam) score += 2;
   if (gift.tags.hobby && (favorites.hobbies ?? []).includes(gift.tags.hobby)) score += 1.5;
+  if (gift.sizable && favorites.shirtSize) score += 1;
   return score;
 }
 

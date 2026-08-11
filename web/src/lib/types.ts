@@ -60,6 +60,7 @@ export type GiftCatalogItem = {
   blurb: string;
   priceRange: string;
   link: string;
+  sizable: boolean;
   tags: {
     color?: string;
     treat?: string;
@@ -67,6 +68,9 @@ export type GiftCatalogItem = {
     scent?: string;
     hobby?: string;
     store?: string;
+    restaurant?: string;
+    flower?: string;
+    sportsTeam?: string;
   };
 };
 
