@@ -11,7 +11,7 @@ type SchoolFields = {
   gradesJson: string;
   id: string;
   Level?: SchoolLevel;
-  Parish?: string;
+  County?: string;
 };
 
 function toSchool(record: { id: string; fields: Partial<SchoolFields> }): School {
@@ -27,7 +27,7 @@ function toSchool(record: { id: string; fields: Partial<SchoolFields> }): School
     id: f.id ?? record.id,
     name: f.name ?? f.Name ?? "Untitled School",
     city: f.city ?? "",
-    parish: f.Parish ?? "",
+    parish: f.County ?? "",
     level: f.Level ?? "",
     domain: f.domain ?? "",
     grades,
@@ -70,7 +70,7 @@ export async function createSchool(input: {
     Name: input.name,
     name: input.name,
     city: input.city,
-    Parish: input.parish,
+    County: input.parish,
     Level: input.level,
     id,
     gradesJson: JSON.stringify(input.grades),
