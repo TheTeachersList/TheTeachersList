@@ -404,7 +404,12 @@ export default function AddProfileForm() {
         <label className="text-[12.5px] font-semibold text-ink-soft uppercase tracking-wide">
           Have a handwritten favorites sheet? Upload a photo and we&apos;ll try to fill this in for you.
         </label>
-        <input type="file" accept="image/*" onChange={handlePhoto} className="block mt-2 text-sm" />
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handlePhoto}
+          className="block mt-2 text-sm text-ink-soft cursor-pointer file:cursor-pointer file:mr-3 file:py-1.5 file:px-3 file:rounded-[4px] file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-600 hover:file:bg-blue-100"
+        />
         {photoBusy && <p className="text-ink-soft text-xs mt-1.5">Reading the photo…</p>}
         {photoNote && <p className="text-ink-soft text-xs mt-1.5">{photoNote}</p>}
         {photoDraft && (
