@@ -41,6 +41,9 @@ export default function HomePage() {
           <circle cx="12" cy="12" r="3.6" fill="none" stroke="currentColor" strokeWidth="1.6" />
           <circle cx="16.2" cy="7.8" r="0.9" />
         </SocialLink>
+        <SocialLink href="https://www.tiktok.com/@theteacherslist" label="The Teacher's List on TikTok">
+          <path d="M16.5 3h-2.6v11.9a2.6 2.6 0 1 1-1.9-2.5V9.7a5.2 5.2 0 1 0 4.5 5.2V9.1a6.6 6.6 0 0 0 3.8 1.2V7.7a4 4 0 0 1-3.8-4.7z" />
+        </SocialLink>
       </div>
 
       <div className="grid sm:grid-cols-3 gap-5 mt-16 text-center">
