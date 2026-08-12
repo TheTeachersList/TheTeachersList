@@ -25,12 +25,54 @@ export default function HomePage() {
         </Link>
       </div>
 
+      <div className="flex items-center justify-center gap-3 mt-6">
+        <span className="font-hand text-lg text-ink-soft -rotate-2">follow along</span>
+        <SocialLink
+          href="https://www.facebook.com/profile.php?id=61579054637236"
+          label="The Teacher's List on Facebook"
+        >
+          <path d="M13.5 9H15V6.5h-1.5C11.6 6.5 10 8.1 10 10.2V12H8v2.5h2V21h2.5v-6.5H15l.5-2.5h-3v-1.6c0-.6.4-1 1-1z" />
+        </SocialLink>
+        <SocialLink
+          href="https://www.instagram.com/the_teachers_list/"
+          label="The Teacher's List on Instagram"
+        >
+          <rect x="4" y="4" width="16" height="16" rx="4.5" fill="none" stroke="currentColor" strokeWidth="1.6" />
+          <circle cx="12" cy="12" r="3.6" fill="none" stroke="currentColor" strokeWidth="1.6" />
+          <circle cx="16.2" cy="7.8" r="0.9" />
+        </SocialLink>
+      </div>
+
       <div className="grid sm:grid-cols-3 gap-5 mt-16 text-center">
         <FeatureCard title="Look them up" body="Browse by school, then by grade or role, to find who you're shopping for." />
         <FeatureCard title="See what they like" body="Favorites, a wishlist note, and gift ideas matched to their taste." />
         <FeatureCard title="Claim, don't duplicate" body="Mark a gift as taken so the whole class doesn't show up with the same candle." />
       </div>
     </div>
+  );
+}
+
+function SocialLink({
+  href,
+  label,
+  children,
+}: {
+  href: string;
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noreferrer noopener"
+      aria-label={label}
+      className="w-9 h-9 flex items-center justify-center rounded-full bg-board text-paper hover:bg-brick transition-colors"
+    >
+      <svg viewBox="0 0 24 24" width={18} height={18} fill="currentColor">
+        {children}
+      </svg>
+    </a>
   );
 }
 
