@@ -2,11 +2,11 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { ErrText, Field, HobbyPicker, SelectField } from "./FavoritesFields";
 import {
   COLORS,
   DRINKS,
   FLOWERS,
-  HOBBIES,
   RESTAURANTS,
   SCENTS,
   SHIRT_SIZES,
@@ -117,23 +117,6 @@ export default function AddProfileForm() {
   function applyPhotoDraft() {
     if (photoDraft) setFavorites(photoDraft);
     setPhotoDraft(null);
-  }
-
-  function toggleHobby(h: string) {
-    setFavorites((prev) => {
-      const has = prev.hobbies.includes(h);
-      return has
-        ? { ...prev, hobbies: prev.hobbies.filter((x) => x !== h) }
-        : { ...prev, hobbies: [...prev.hobbies, h] };
-    });
-  }
-
-  const [customHobby, setCustomHobby] = useState("");
-  function addCustomHobby() {
-    const h = customHobby.trim();
-    if (!h || favorites.hobbies.includes(h)) return;
-    setFavorites((prev) => ({ ...prev, hobbies: [...prev.hobbies, h] }));
-    setCustomHobby("");
   }
 
   function toggleGrade(g: string) {
@@ -463,55 +446,7 @@ export default function AddProfileForm() {
         <SelectField label="Shirt Size" value={favorites.shirtSize} options={SHIRT_SIZES} onChange={(v) => setFavorites((p) => ({ ...p, shirtSize: v }))} />
       </div>
 
-      <Field label="Hobbies" full>
-        <div className="flex flex-wrap gap-2">
-          {HOBBIES.map((h) => (
-            <button
-              type="button"
-              key={h}
-              onClick={() => toggleHobby(h)}
-              className={`border hairline rounded-full px-3.5 py-1.5 text-[13px] ${
-                favorites.hobbies.includes(h) ? "bg-board text-white border-board" : "bg-white text-ink"
-              }`}
-            >
-              {h}
-            </button>
-          ))}
-          {favorites.hobbies
-            .filter((h) => !HOBBIES.includes(h))
-            .map((h) => (
-              <button
-                type="button"
-                key={h}
-                onClick={() => toggleHobby(h)}
-                className="border hairline rounded-full px-3.5 py-1.5 text-[13px] bg-board text-white border-board"
-              >
-                {h} ×
-              </button>
-            ))}
-        </div>
-        <div className="flex gap-1.5 mt-2">
-          <input
-            value={customHobby}
-            onChange={(e) => setCustomHobby(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                addCustomHobby();
-              }
-            }}
-            placeholder="Not listed? Add your own"
-            className="flex-1 border hairline rounded-[4px] px-2.5 py-1.5 text-[13px] bg-white"
-          />
-          <button
-            type="button"
-            onClick={addCustomHobby}
-            className="border border-board text-board text-xs font-semibold rounded-[4px] px-3 py-1.5 shrink-0"
-          >
-            Add
-          </button>
-        </div>
-      </Field>
+      <HobbyPicker value={favorites.hobbies} onChange={(hobbies) => setFavorites((p) => ({ ...p, hobbies }))} />
 
       <Field label="Please avoid (allergies, dislikes)" full>
         <input
@@ -611,81 +546,3 @@ function NewSchoolForm({
   );
 }
 
-function Field({ label, full, children }: { label: string; full?: boolean; children: React.ReactNode }) {
-  return (
-    <div className={`flex flex-col gap-1.5 ${full ? "sm:col-span-2" : ""}`}>
-      <label className="text-[12.5px] font-semibold text-ink-soft uppercase tracking-wide">{label}</label>
-      {children}
-    </div>
-  );
-}
-
-function SelectField({
-  label,
-  value,
-  options,
-  onChange,
-}: {
-  label: string;
-  value: string;
-  options: string[];
-  onChange: (v: string) => void;
-}) {
-  const isKnown = value === "" || options.includes(value);
-  const [customMode, setCustomMode] = useState(!isKnown);
-
-  if (customMode) {
-    return (
-      <Field label={label}>
-        <div className="flex gap-1.5">
-          <input
-            autoFocus
-            value={value}
-            onChange={(e) => onChange(e.target.value)}
-            placeholder="Type your own"
-            className="flex-1 min-w-0 border hairline rounded-[4px] px-3 py-2 bg-white text-[15px]"
-          />
-          <button
-            type="button"
-            onClick={() => {
-              setCustomMode(false);
-              onChange("");
-            }}
-            className="text-xs text-brick underline shrink-0"
-          >
-            use list
-          </button>
-        </div>
-      </Field>
-    );
-  }
-
-  return (
-    <Field label={label}>
-      <select
-        value={value}
-        onChange={(e) => {
-          if (e.target.value === "__other__") {
-            setCustomMode(true);
-            onChange("");
-          } else {
-            onChange(e.target.value);
-          }
-        }}
-        className="w-full border hairline rounded-[4px] px-3 py-2 bg-white text-[15px]"
-      >
-        <option value="">—</option>
-        {options.map((o) => (
-          <option key={o} value={o}>
-            {o}
-          </option>
-        ))}
-        <option value="__other__">Other — add my own</option>
-      </select>
-    </Field>
-  );
-}
-
-function ErrText({ text }: { text: string }) {
-  return <p className="text-brick text-xs min-h-[14px]">{text}</p>;
-}

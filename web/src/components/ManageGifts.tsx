@@ -1,7 +1,22 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { CustomGift, Profile, SuggestedGift } from "@/lib/types";
+import { Field, HobbyPicker, SelectField } from "./FavoritesFields";
+import {
+  COLORS,
+  DRINKS,
+  FLOWERS,
+  RESTAURANTS,
+  SCENTS,
+  SHIRT_SIZES,
+  SPORTS_TEAMS,
+  STORES,
+  TREATS,
+  type CustomGift,
+  type Favorites,
+  type Profile,
+  type SuggestedGift,
+} from "@/lib/types";
 
 type SuggestionWithDecision = SuggestedGift & { decision: "approved" | "declined" | "pending" };
 
@@ -206,6 +221,8 @@ function Dashboard({ token, onSignOut }: { token: string; onSignOut: () => void 
         </div>
       </div>
 
+      <EditFavorites favorites={profile.favorites} token={token} onSaved={load} />
+
       <section>
         <h2 className="font-display font-semibold text-lg text-board mb-1">Suggested gifts</h2>
         <p className="text-ink-soft text-[13.5px] mb-3">
@@ -258,6 +275,105 @@ function Dashboard({ token, onSignOut }: { token: string; onSignOut: () => void 
         <AddCustomGiftForm onAdd={addCustomGift} />
       </section>
     </div>
+  );
+}
+
+function EditFavorites({
+  favorites,
+  token,
+  onSaved,
+}: {
+  favorites: Favorites;
+  token: string;
+  onSaved: () => void | Promise<void>;
+}) {
+  const [draft, setDraft] = useState<Favorites>(favorites);
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState("");
+  const [saved, setSaved] = useState(false);
+
+  function set<K extends keyof Favorites>(key: K, value: Favorites[K]) {
+    setDraft((p) => ({ ...p, [key]: value }));
+    setSaved(false);
+  }
+
+  async function save() {
+    setBusy(true);
+    setErr("");
+    try {
+      const res = await fetch("/api/manage/favorites", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ favorites: draft }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setErr(data.error ?? "Couldn't save your changes.");
+        return;
+      }
+      await onSaved();
+      setSaved(true);
+    } catch {
+      setErr("Something went wrong. Please try again.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <section>
+      <h2 className="font-display font-semibold text-lg text-board mb-1">Your favorites</h2>
+      <p className="text-ink-soft text-[13.5px] mb-3">
+        Change any answer below — your suggested gifts refresh to match once you save.
+      </p>
+      <div className="bg-card border hairline rounded-[4px] p-5 space-y-4">
+        <div className="grid sm:grid-cols-2 gap-4">
+          <SelectField label="Favorite Color" value={draft.color} options={COLORS} onChange={(v) => set("color", v)} />
+          <SelectField label="Favorite Treat" value={draft.treat} options={TREATS} onChange={(v) => set("treat", v)} />
+          <SelectField label="Go-to Drink" value={draft.drink} options={DRINKS} onChange={(v) => set("drink", v)} />
+          <SelectField label="Favorite Scent / Candle" value={draft.scent} options={SCENTS} onChange={(v) => set("scent", v)} />
+          <SelectField label="Favorite Store" value={draft.store} options={STORES} onChange={(v) => set("store", v)} />
+          <SelectField label="Favorite Restaurant" value={draft.restaurant} options={RESTAURANTS} onChange={(v) => set("restaurant", v)} />
+          <SelectField label="Favorite Flower" value={draft.flower} options={FLOWERS} onChange={(v) => set("flower", v)} />
+          <SelectField label="Favorite Sports Team" value={draft.sportsTeam} options={SPORTS_TEAMS} onChange={(v) => set("sportsTeam", v)} />
+          <SelectField label="Shirt Size" value={draft.shirtSize} options={SHIRT_SIZES} onChange={(v) => set("shirtSize", v)} />
+        </div>
+
+        <HobbyPicker value={draft.hobbies} onChange={(hobbies) => set("hobbies", hobbies)} />
+
+        <Field label="Please avoid (allergies, dislikes)" full>
+          <input
+            value={draft.avoid}
+            onChange={(e) => set("avoid", e.target.value)}
+            placeholder="e.g. nut allergy, fragrance sensitive"
+            className="w-full border hairline rounded-[4px] px-3 py-2 bg-white text-[15px]"
+          />
+        </Field>
+
+        <Field label="Wishlist note (optional)" full>
+          <textarea
+            rows={2}
+            value={draft.wishlist}
+            onChange={(e) => set("wishlist", e.target.value)}
+            placeholder="e.g. classroom supplies, a specific book, etc."
+            className="w-full border hairline rounded-[4px] px-3 py-2 bg-white text-[15px]"
+          />
+        </Field>
+
+        <div className="flex items-center justify-end gap-3">
+          {saved && <span className="text-[12.5px] text-board font-semibold">Saved!</span>}
+          {err && <p className="text-brick text-xs">{err}</p>}
+          <button
+            type="button"
+            onClick={save}
+            disabled={busy}
+            className="bg-brick hover:bg-brick-dark text-white rounded-[4px] px-4 py-2 text-sm font-semibold disabled:opacity-60"
+          >
+            {busy ? "Saving…" : "Save changes"}
+          </button>
+        </div>
+      </div>
+    </section>
   );
 }
 
