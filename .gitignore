@@ -5,3 +5,6 @@ ClaudeAIandAirtablewebsitehtml.zip
 # Claude Code local machine state — not project source
 .claude/settings.local.json
 .claude/scheduled_tasks.lock
+
+.vercel
+.env*
