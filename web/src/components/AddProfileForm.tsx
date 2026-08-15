@@ -25,6 +25,23 @@ const MONTHS = [
 ];
 const DAYS = Array.from({ length: 31 }, (_, i) => i + 1);
 
+const DEFAULT_GRADES = [
+  "Pre-K",
+  "Kindergarten",
+  "1st Grade",
+  "2nd Grade",
+  "3rd Grade",
+  "4th Grade",
+  "5th Grade",
+  "6th Grade",
+  "7th Grade",
+  "8th Grade",
+  "9th Grade",
+  "10th Grade",
+  "11th Grade",
+  "12th Grade",
+];
+
 const emptyFavorites: Favorites = {
   color: "",
   treat: "",
@@ -80,7 +97,14 @@ export default function AddProfileForm() {
   }, []);
 
   const selectedSchool = useMemo(() => schools.find((s) => s.id === schoolId), [schools, schoolId]);
-  const gradeOptions = category === "teacher" ? selectedSchool?.grades ?? [] : STAFF_ROLES;
+  const gradeOptions =
+    category === "teacher"
+      ? selectedSchool
+        ? selectedSchool.grades.length > 0
+          ? selectedSchool.grades
+          : DEFAULT_GRADES
+        : []
+      : STAFF_ROLES;
 
   async function handlePhoto(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -520,23 +544,7 @@ function NewSchoolForm({
       return;
     }
     setBusy(true);
-    const grades = [
-      "Pre-K",
-      "Kindergarten",
-      "1st Grade",
-      "2nd Grade",
-      "3rd Grade",
-      "4th Grade",
-      "5th Grade",
-      "6th Grade",
-      "7th Grade",
-      "8th Grade",
-      "9th Grade",
-      "10th Grade",
-      "11th Grade",
-      "12th Grade",
-    ];
-    const data = await onAdd({ name, city, parish, level, grades });
+    const data = await onAdd({ name, city, parish, level, grades: DEFAULT_GRADES });
     setBusy(false);
     if (data.error) setErr(data.error);
   }
