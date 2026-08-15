@@ -70,6 +70,8 @@ export default function AddProfileForm() {
   const [verifyErr, setVerifyErr] = useState("");
   const [devCode, setDevCode] = useState("");
   const [busy, setBusy] = useState(false);
+  const [resendBusy, setResendBusy] = useState(false);
+  const [resendOk, setResendOk] = useState(false);
 
   useEffect(() => {
     fetch("/api/schools")
@@ -206,13 +208,26 @@ export default function AddProfileForm() {
 
   async function resendCode() {
     setVerifyErr("");
-    const res = await fetch("/api/verify/send", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, purpose: "add-profile" }),
-    });
-    const data = await res.json();
-    setDevCode(data.devCode ?? "");
+    setResendOk(false);
+    setResendBusy(true);
+    try {
+      const res = await fetch("/api/verify/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, purpose: "add-profile" }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setVerifyErr(data.error ?? "We couldn't resend your code. Please try again.");
+        return;
+      }
+      if (data.devCode) setDevCode(data.devCode);
+      setResendOk(true);
+    } catch {
+      setVerifyErr("We couldn't resend your code. Please try again.");
+    } finally {
+      setResendBusy(false);
+    }
   }
 
   async function confirmCode() {
@@ -270,13 +285,14 @@ export default function AddProfileForm() {
           </button>
         </div>
         <p className="text-brick text-xs mt-1.5 min-h-[16px]">{verifyErr}</p>
-        <div className="flex gap-4 mt-2">
-          <button onClick={resendCode} className="text-brick underline text-sm">
-            Resend code
+        <div className="flex items-center gap-4 mt-2">
+          <button onClick={resendCode} disabled={resendBusy} className="text-brick underline text-sm disabled:opacity-60">
+            {resendBusy ? "Resending…" : "Resend code"}
           </button>
           <button onClick={() => setStage("form")} className="text-brick underline text-sm">
             Cancel
           </button>
+          {resendOk && <span className="text-[12.5px] text-board font-semibold">Code resent!</span>}
         </div>
       </div>
     );
