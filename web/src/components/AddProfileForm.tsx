@@ -191,8 +191,12 @@ export default function AddProfileForm() {
         body: JSON.stringify({ email, purpose: "add-profile" }),
       });
       const sendData = await sendRes.json();
-      if (sendData.devCode) setDevCode(sendData.devCode);
       setStage("verify");
+      if (!sendRes.ok) {
+        setVerifyErr(sendData.error ?? "We couldn't send your verification code. Try \"Resend code\" below.");
+      } else if (sendData.devCode) {
+        setDevCode(sendData.devCode);
+      }
     } catch {
       setFormErr("Something went wrong. Please try again.");
     } finally {
