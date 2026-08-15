@@ -140,6 +140,28 @@ export async function createDraftProfile(input: {
   return toProfile(record);
 }
 
+export async function updateDraftFields(
+  recordId: string,
+  input: {
+    school: string;
+    category: ProfileCategory;
+    gradeOrRole: string[];
+    name: string;
+    birthday: string;
+    favorites: Favorites;
+  }
+): Promise<Profile> {
+  const record = await updateRecord<ProfileFields>(TABLE, recordId, {
+    school: input.school,
+    category: input.category,
+    gradeOrRole: JSON.stringify(input.gradeOrRole),
+    name: input.name,
+    birthday: input.birthday,
+    favoritesJson: JSON.stringify(input.favorites),
+  });
+  return toProfile(record);
+}
+
 export async function markProfileVerified(recordId: string): Promise<void> {
   await updateRecord<ProfileFields>(TABLE, recordId, { emailVerified: true });
 }

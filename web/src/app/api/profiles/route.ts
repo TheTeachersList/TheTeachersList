@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createDraftProfile, listProfilesForSchool } from "@/lib/profiles";
+import { createDraftProfile, getProfileBySchoolEmail, listProfilesForSchool, updateDraftFields } from "@/lib/profiles";
 import type { Favorites, ProfileCategory } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -51,15 +51,23 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "That doesn't look like a valid email." }, { status: 400 });
     }
 
-    const profile = await createDraftProfile({
-      school,
-      category,
-      gradeOrRole,
-      name,
-      schoolEmail,
-      birthday,
-      favorites,
-    });
+    const existing = await getProfileBySchoolEmail(schoolEmail);
+
+    if (existing && existing.emailVerified) {
+      return NextResponse.json(
+        {
+          error:
+            "There's already a profile for this email. Head to \"Staff: manage my gifts\" to update it instead.",
+        },
+        { status: 409 }
+      );
+    }
+
+    // An unverified draft from an earlier, never-completed signup — reuse it
+    // instead of creating another orphaned record for the same email.
+    const profile = existing
+      ? await updateDraftFields(existing.recordId, { school, category, gradeOrRole, name, birthday, favorites })
+      : await createDraftProfile({ school, category, gradeOrRole, name, schoolEmail, birthday, favorites });
     return NextResponse.json({ profile }, { status: 201 });
   } catch (err) {
     return NextResponse.json({ error: (err as Error).message }, { status: 500 });
