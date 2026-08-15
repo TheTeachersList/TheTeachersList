@@ -80,6 +80,9 @@ function SiteHeader() {
           <Link href="/contact" className="hover:text-gold hidden md:inline">
             Contact
           </Link>
+          <Link href="/help" className="hover:text-gold hidden md:inline">
+            Help
+          </Link>
           <Link
             href="/add-profile"
             className="bg-brick hover:bg-brick-dark text-white rounded-[4px] px-3 py-2 text-sm font-semibold whitespace-nowrap shrink-0"
@@ -119,6 +122,9 @@ function SiteFooter() {
           </Link>
           <Link href="/contact" className="hover:text-brick">
             Contact
+          </Link>
+          <Link href="/help" className="hover:text-brick">
+            Help
           </Link>
           <Link href="/manage-gifts" className="hover:text-brick">
             Staff: manage my gifts
