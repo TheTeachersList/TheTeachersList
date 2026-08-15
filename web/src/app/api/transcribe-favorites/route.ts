@@ -77,7 +77,11 @@ Respond with ONLY a JSON object in exactly this shape, no other text:
 
     if (!res.ok) {
       const text = await res.text();
-      return NextResponse.json({ error: `Transcription failed: ${text}` }, { status: 502 });
+      console.error(`Transcription API error (${res.status}):`, text);
+      return NextResponse.json(
+        { error: "Couldn't read that photo. Try again or fill the form in by hand." },
+        { status: 502 }
+      );
     }
 
     const data = await res.json();
