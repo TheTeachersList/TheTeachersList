@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createDraftProfile, getProfileBySchoolEmail, listProfilesForSchool, updateDraftFields } from "@/lib/profiles";
+import { isSchoolEmail } from "@/lib/schoolEmail";
 import type { Favorites, ProfileCategory } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -49,6 +50,12 @@ export async function POST(request: Request) {
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(schoolEmail)) {
       return NextResponse.json({ error: "That doesn't look like a valid email." }, { status: 400 });
+    }
+    if (!isSchoolEmail(schoolEmail)) {
+      return NextResponse.json(
+        { error: "Please use a .edu or .org school email address for verification." },
+        { status: 400 }
+      );
     }
 
     const existing = await getProfileBySchoolEmail(schoolEmail);

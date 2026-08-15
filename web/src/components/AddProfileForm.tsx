@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ErrText, Field, HobbyPicker, SelectField } from "./FavoritesFields";
+import { isSchoolEmail } from "@/lib/schoolEmail";
 import {
   COLORS,
   DRINKS,
@@ -184,6 +185,10 @@ export default function AddProfileForm() {
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       setEmailErr("Please enter a valid school email.");
+      return;
+    }
+    if (!isSchoolEmail(email)) {
+      setEmailErr("Please use a .edu or .org school email address for verification.");
       return;
     }
 
@@ -413,6 +418,9 @@ export default function AddProfileForm() {
             placeholder="name@schooldomain.org"
             className="w-full border hairline rounded-[4px] px-3 py-2 bg-white text-[15px]"
           />
+          <span className="text-[11.5px] text-ink-soft block">
+            Must be a .edu or .org email (or a school district .k12 address) for verification.
+          </span>
           {selectedSchool?.domain && (
             <span className="text-[11.5px] text-ink-soft">Usually ends in @{selectedSchool.domain}</span>
           )}
